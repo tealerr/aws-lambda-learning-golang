@@ -1,0 +1,23 @@
+# Go build artifacts
+/bootstrap
+/*.exe
+/*.test
+/*.out
+/coverage.*
+
+# AWS SAM build output
+/.aws-sam/
+/packaged.yaml
+
+# Local environment and tool caches
+/.env
+/.env.*
+!.env.example
+/.cache/
+/.codex-gocache/
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

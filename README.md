@@ -9,7 +9,7 @@
 
 ## สิ่งที่ต้องติดตั้ง
 
-- Go 1.22 ขึ้นไป
+- Go 1.25 ขึ้นไป
 - AWS SAM CLI สำหรับรันหรือ deploy Lambda
 - Docker สำหรับ `sam local`
 
@@ -53,10 +53,18 @@ curl http://127.0.0.1:3000/Prod/health
 
 ```sh
 sam build
-sam deploy --guided
+sam deploy --guided \
+  --parameter-overrides \
+  'DatadogExtensionLayerArn=arn:aws:lambda:REGION:464622532012:layer:Datadog-Extension-ARM:91' \
+  'DatadogApiKeySecretArn=SECRET_ARN' \
+  DatadogSite=datadoghq.com
 ```
 
-เมื่อ deploy เสร็จ ใช้ API Gateway URL ที่ SAM แสดง แล้วเรียก `/` หรือ `/health`
+ก่อน deploy ให้สร้าง AWS Secrets Manager secret ที่เก็บ Datadog API key เป็น plaintext string และใช้ Extension layer ARN ที่ตรงกับ region และ architecture `arm64` ของฟังก์ชัน (ตัวอย่าง ARN ใช้ AWS commercial region และ layer version 91 ตาม Datadog docs) execution role จะได้รับ `secretsmanager:GetSecretValue` สำหรับ secret นี้จาก template
+
+กำหนด `DatadogSite` ให้ตรงกับ Datadog site ของบัญชี เช่น `datadoghq.com`, `us3.datadoghq.com` หรือ `datadoghq.eu` เมื่อ deploy เสร็จ ใช้ API Gateway URL ที่ SAM แสดง แล้วเรียก `/` หรือ `/health`
+
+ฟังก์ชันส่ง unified service tags ผ่าน `DD_ENV`, `DD_SERVICE` และ `DD_VERSION` ซึ่งกำหนดค่าเริ่มต้นไว้ใน `template.yaml` และสามารถแก้ให้ตรงกับ environment/release ของคุณได้
 
 ## โครงสร้างไฟล์
 
