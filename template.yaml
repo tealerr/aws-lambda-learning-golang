@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Go AWS Lambda learning starter
+
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 128
+
+Resources:
+  HelloFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Runtime: provided.al2023
+      Architectures:
+        - arm64
+      Events:
+        HelloApi:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+        HelloRootApi:
+          Type: Api
+          Properties:
+            Path: /
+            Method: any
+    Metadata:
+      BuildMethod: go1.x
+
+Outputs:
+  HelloApiUrl:
+    Description: API Gateway base URL for the hello function
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/'
