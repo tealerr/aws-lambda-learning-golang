@@ -1,0 +1,19 @@
+services:
+  app:
+    image: golang:1.26
+    working_dir: /app
+    command: ["go", "run", "main.go"]
+    environment:
+      LOCAL_SERVER: "true"
+    ports:
+      - "${APP_PORT:-8081}:8080"
+    volumes:
+      - .:/app
+      - type: bind
+        source: ${USERPROFILE}/go/pkg/mod
+        target: /go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+    init: true
+
+volumes:
+  go-build-cache:

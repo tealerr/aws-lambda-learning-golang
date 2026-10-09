@@ -8,6 +8,7 @@
 # AWS SAM build output
 /.aws-sam/
 /packaged.yaml
+/*.zip
 
 # Local environment and tool caches
 /.env
